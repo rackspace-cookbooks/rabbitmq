@@ -1,8 +1,8 @@
 #
 # Cookbook Name:: rabbitmq_test
-# Recipe:: default
+# Recipe:: lwrps
 #
-# Copyright 2012-2013, Opscode, Inc. <legal@opscode.com>
+# Copyright 2013, Opscode, Inc. <legal@opscode.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,9 +21,18 @@ chef_gem "bunny"
 
 include_recipe "rabbitmq::default"
 
-# hack to give rabbit time to spin up before the tests, it seems
-# to be responding that it has started before it really has
+# force the rabbitmq restart now, then start testing
 execute "sleep 10" do
-  action :nothing
-  subscribes :run, "service[#{node['rabbitmq']['service_name']}]", :delayed
+  notifies :restart, "service[#{node['rabbitmq']['service_name']}]", :immediately
+end
+
+include_recipe "rabbitmq::plugin_management"
+include_recipe "rabbitmq::virtualhost_management"
+include_recipe "rabbitmq::policy_management"
+include_recipe "rabbitmq::user_management"
+
+# can't verify it actually goes through without logging in, but at least exercise the code
+rabbitmq_user 'kitchen3' do
+  password 'foobar'
+  action :change_password
 end

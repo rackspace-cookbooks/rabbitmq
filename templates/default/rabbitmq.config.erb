@@ -5,6 +5,15 @@
 [
 <% if node['rabbitmq']['local_erl_networking'] %>
   {kernel, [{inet_dist_use_interface,{127,0,0,1}}]},
+<% elsif node['rabbitmq']['erl_networking_bind_address'] -%>
+  {kernel, [{inet_dist_use_interface,{<%= node['rabbitmq']['erl_networking_bind_address'].gsub(/\./, ',') %>}}]},
+<% end %>
+<% if node['rabbitmq']['web_console_ssl'] -%>
+  {rabbitmq_management, [
+    {listener, [{port, <%= node['rabbitmq']['web_console_ssl_port'] %>},
+                {ssl, true}
+              ]}
+  ]},
 <% end %>
   {rabbit, [
 <% if node['rabbitmq']['cluster'] && node['rabbitmq']['cluster_disk_nodes'] -%>
@@ -18,6 +27,12 @@
                     {verify,<%= node['rabbitmq']['ssl_verify'] %>},
                     {fail_if_no_peer_cert,<%= node['rabbitmq']['ssl_fail_if_no_peer_cert'] %>}]},
 <% end %>
+    {tcp_listen_options, [binary, {packet,<%= node['rabbitmq']['tcp_listen_packet'] %>},
+                                  {reuseaddr,<%= node['rabbitmq']['tcp_listen_reuseaddr'] %>},
+                                  {backlog,<%= node['rabbitmq']['tcp_listen_backlog'] %>},
+                                  {nodelay,<%= node['rabbitmq']['tcp_listen_nodelay'] %>},
+                                  {exit_on_close,<%= node['rabbitmq']['tcp_listen_exit_on_close'] %>},
+                                  {keepalive,<%= node['rabbitmq']['tcp_listen_keepalive'] %>}]},
 <% if node['rabbitmq']['disk_free_limit_relative'] -%>
     {disk_free_limit, {mem_relative, <%= node['rabbitmq']['disk_free_limit_relative'] %>}},
 <% end %>

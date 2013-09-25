@@ -3,7 +3,7 @@ maintainer        "Opscode, Inc."
 maintainer_email  "cookbooks@opscode.com"
 license           "Apache 2.0"
 description       "Installs and configures RabbitMQ server"
-version           "2.1.3"
+version           "2.3.1"
 recipe            "rabbitmq", "Install and configure RabbitMQ"
 recipe            "rabbitmq::cluster", "Set up RabbitMQ clustering."
 recipe            "rabbitmq::plugin_management", "Manage plugins with node attributes"
@@ -11,7 +11,7 @@ recipe            "rabbitmq::virtualhost_management", "Manage virtualhost with n
 recipe            "rabbitmq::user_management", "Manage users with node attributes"
 depends           "erlang", ">= 0.9"
 
-%w{ubuntu debian linuxmint redhat centos scientific amazon fedora oracle smartos}.each do |os|
+%w{ubuntu debian linuxmint redhat centos scientific amazon fedora oracle smartos suse}.each do |os|
   supports os
 end
 
@@ -99,3 +99,6 @@ attribute "rabbitmq/local_erl_networking",
   :display_name => "Local Erlang networking",
   :description => "Bind erlang networking to localhost"
 
+attribute "rabbitmq/erl_networking_bind_address",
+  :display_name => "Erl Networking Bind Address",
+  :description => "Bind Rabbit and erlang networking to an address"
