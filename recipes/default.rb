@@ -128,13 +128,12 @@ when 'smartos'
   end
 end
 
-if node['rabbitmq']['logdir']
-  directory node['rabbitmq']['logdir'] do
-    owner 'rabbitmq'
-    group 'rabbitmq'
-    mode '775'
-    recursive true
-  end
+directory node['rabbitmq']['logdir'] do
+  owner 'rabbitmq'
+  group 'rabbitmq'
+  mode '775'
+  recursive true
+  only_if { !node['rabbitmq']['logdir']?nil }
 end
 
 directory node['rabbitmq']['mnesiadir'] do
