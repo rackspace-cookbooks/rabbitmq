@@ -3,7 +3,7 @@
 # Cookbook Name:: rabbitmq
 # Recipe:: plugin_management
 #
-# Copyright 2013, Gregoire Seux
+# Copyright 2013, Grégoire Seux
 # Copyright 2013, Opscode, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,7 @@
 # limitations under the License.
 #
 
-include_recipe 'rabbitmq::default'
+include_recipe "rabbitmq::default"
 
 node['rabbitmq']['enabled_plugins'].each do |plugin|
   rabbitmq_plugin plugin do
