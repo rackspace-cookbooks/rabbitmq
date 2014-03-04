@@ -6,7 +6,7 @@
 
 include_recipe 'rabbitmq::default'
 
-# hack to give rabbit time to spin up before the tests, it seems
+# FIX: hack to give rabbit time to spin up before the tests, it seems
 # to be responding that it has started before it really has
 execute 'sleep 10' do
   action :nothing

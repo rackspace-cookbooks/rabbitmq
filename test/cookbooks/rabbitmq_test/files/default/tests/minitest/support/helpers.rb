@@ -13,8 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
+# Module Helpers
 module Helpers
+# Module RabbitMQ
   module RabbitMQ
     require 'mixlib/shellout'
     include MiniTest::Chef::Assertions
