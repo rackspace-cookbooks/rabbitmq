@@ -133,6 +133,7 @@ directory node['rabbitmq']['logdir'] do
   group 'rabbitmq'
   mode '775'
   recursive true
+  only_if { node['rabbitmq']['logdir'] }
 end
 
 directory node['rabbitmq']['mnesiadir'] do

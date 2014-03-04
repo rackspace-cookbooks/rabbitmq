@@ -8,7 +8,7 @@ default['rabbitmq']['nodename']  = nil
 default['rabbitmq']['address']  = nil
 default['rabbitmq']['port']  = nil
 default['rabbitmq']['config'] = nil
-default['rabbitmq']['logdir'] = nil
+default['rabbitmq']['logdir'] = '/var/log/rabbitmq'
 default['rabbitmq']['mnesiadir'] = '/var/lib/rabbitmq/mnesia'
 default['rabbitmq']['service_name'] = 'rabbitmq-server'
 
