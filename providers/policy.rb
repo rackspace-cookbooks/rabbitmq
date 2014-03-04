@@ -32,7 +32,7 @@ end
 
 action :set do
   unless policy_exists?(new_resource.policy)
-    cmd = "rabbitmqctl set_policy"
+    cmd = 'rabbitmqctl set_policy'
     cmd << " -p #{new_resource.vhost}" unless new_resource.vhost.nil?
     cmd << " #{new_resource.policy}"
     cmd << " \"#{new_resource.pattern}\""
@@ -41,7 +41,7 @@ action :set do
     first_param = true
     new_resource.params.each do |key, value|
       unless first_param
-        cmd << ","
+        cmd << ','
       end
       if value.kind_of? String
         cmd << "\"#{key}\":\"#{value}\""
@@ -78,8 +78,8 @@ action :clear do
 end
 
 action :list do
-  execute "list_policies" do
-    command "rabbitmqctl list_policies"
+  execute 'list_policies' do
+    command 'rabbitmqctl list_policies'
   end
 
   new_resource.updated_by_last_action(true)

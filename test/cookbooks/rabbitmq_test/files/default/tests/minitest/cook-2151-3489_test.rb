@@ -16,7 +16,7 @@
 
 require File.expand_path('../support/helpers', __FILE__)
 
-describe "rabbitmq_test::cook-2151" do
+describe 'rabbitmq_test::cook-2151' do
   include Helpers::RabbitMQ
 
   it 'includes the disk_free_limit configuration setting' do
