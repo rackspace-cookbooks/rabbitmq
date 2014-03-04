@@ -73,16 +73,15 @@ when 'debian'
   ## debian package (at least in 2.8.2) that makes it not daemonize properly
   ## when called from chef. The setsid command forces the subprocess into a state
   ## where it can daemonize properly. -Kevin (thanks to Daniel DeLeo for the help)
-  if node['rabbitmq']['job_control'] == 'initd'
-    service node['rabbitmq']['service_name'] do
-      start_command 'setsid /etc/init.d/rabbitmq-server start'
-      stop_command 'setsid /etc/init.d/rabbitmq-server stop'
-      restart_command 'setsid /etc/init.d/rabbitmq-server restart'
-      status_command 'setsid /etc/init.d/rabbitmq-server status'
-      supports status: true, restart: true
-      action [:enable, :start]
-    end
-  end
+service node['rabbitmq']['service_name'] do
+  start_command 'setsid /etc/init.d/rabbitmq-server start'
+  stop_command 'setsid /etc/init.d/rabbitmq-server stop'
+  restart_command 'setsid /etc/init.d/rabbitmq-server restart'
+  status_command 'setsid /etc/init.d/rabbitmq-server status'
+  supports status: true, restart: true
+  action [:enable, :start]
+  only_if { node['rabbitmq']['job_control'] == 'initd' }
+end
 
 when 'rhel', 'fedora'
   # This is needed since Erlang Solutions' packages provide "esl-erlang"; this package just requires "esl-erlang" and provides "erlang".
@@ -129,14 +128,14 @@ when 'smartos'
   end
 end
 
-if node['rabbitmq']['logdir']
-  directory node['rabbitmq']['logdir'] do
-    owner 'rabbitmq'
-    group 'rabbitmq'
-    mode '775'
-    recursive true
-  end
+directory node['rabbitmq']['logdir'] do
+  owner 'rabbitmq'
+  group 'rabbitmq'
+  mode '775'
+  recursive true
+  only_if { node['rabbitmq']['logdir'] }
 end
+
 
 directory node['rabbitmq']['mnesiadir'] do
   owner 'rabbitmq'
