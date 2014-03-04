@@ -126,7 +126,7 @@ when 'smartos'
   service node['rabbitmq']['service_name'] do
     action [:enable, :start]
   end
-end
+
 
 directory node['rabbitmq']['logdir'] do
   owner 'rabbitmq'
