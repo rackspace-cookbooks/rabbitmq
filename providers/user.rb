@@ -68,7 +68,7 @@ def user_has_permissions?(name, vhost, perm_list = nil)
     return true
   end
   Chef::Log.debug 'rabbitmq_user_has_permissions?: permissions found but do not match'
-  return false
+  false
 end
 
 action :add do
