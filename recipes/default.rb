@@ -83,6 +83,7 @@ when 'debian'
       action [:enable, :start]
     end
   end
+
 when 'rhel', 'fedora'
   # This is needed since Erlang Solutions' packages provide "esl-erlang"; this package just requires "esl-erlang" and provides "erlang".
   if node['erlang']['install_method'] == 'esl'
@@ -128,12 +129,13 @@ when 'smartos'
   end
 end
 
-directory node['rabbitmq']['logdir'] do
-  owner 'rabbitmq'
-  group 'rabbitmq'
-  mode '775'
-  recursive true
-  only_if { node['rabbitmq']['logdir'] }
+if node['rabbitmq']['logdir']
+  directory node['rabbitmq']['logdir'] do
+    owner 'rabbitmq'
+    group 'rabbitmq'
+    mode '775'
+    recursive true
+  end
 end
 
 directory node['rabbitmq']['mnesiadir'] do
