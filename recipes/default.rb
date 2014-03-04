@@ -58,13 +58,13 @@ when 'debian'
       owner 'root'
       group 'root'
       mode 0644
-      variables(:max_file_descriptors => node['rabbitmq']['max_file_descriptors'])
+      variables(max_file_descriptors: node['rabbitmq']['max_file_descriptors'])
     end
 
     service node['rabbitmq']['service_name'] do
       provider Chef::Provider::Service::Upstart
-      action [ :enable, :start ]
-      #restart_command "stop #{node['rabbitmq']['service_name']} && start #{node['rabbitmq']['service_name']}"
+      action [:enable, :start]
+      # restart_command "stop #{node['rabbitmq']['service_name']} && start #{node['rabbitmq']['service_name']}"
     end
   end
 
@@ -73,27 +73,26 @@ when 'debian'
   ## debian package (at least in 2.8.2) that makes it not daemonize properly
   ## when called from chef. The setsid command forces the subprocess into a state
   ## where it can daemonize properly. -Kevin (thanks to Daniel DeLeo for the help)
-  if node['rabbitmq']['job_control'] == 'initd'
-    service node['rabbitmq']['service_name'] do
-      start_command 'setsid /etc/init.d/rabbitmq-server start'
-      stop_command 'setsid /etc/init.d/rabbitmq-server stop'
-      restart_command 'setsid /etc/init.d/rabbitmq-server restart'
-      status_command 'setsid /etc/init.d/rabbitmq-server status'
-      supports :status => true, :restart => true
-      action [ :enable, :start ]
-    end
+  service node['rabbitmq']['service_name'] do
+    start_command 'setsid /etc/init.d/rabbitmq-server start'
+    stop_command 'setsid /etc/init.d/rabbitmq-server stop'
+    restart_command 'setsid /etc/init.d/rabbitmq-server restart'
+    status_command 'setsid /etc/init.d/rabbitmq-server status'
+    supports status: true, restart: true
+    action [:enable, :start]
+    only_if { node['rabbitmq']['job_control'] == 'initd' }
   end
 
 when 'rhel', 'fedora'
-  #This is needed since Erlang Solutions' packages provide "esl-erlang"; this package just requires "esl-erlang" and provides "erlang".
+  # This is needed since Erlang Solutions' packages provide "esl-erlang"; this package just requires "esl-erlang" and provides "erlang".
   if node['erlang']['install_method'] == 'esl'
     remote_file "#{Chef::Config[:file_cache_path]}/esl-erlang-compat.rpm" do
-      source "https://github.com/jasonmcintosh/esl-erlang-compat/blob/master/rpmbuild/RPMS/noarch/esl-erlang-compat-R14B-1.el6.noarch.rpm?raw=true"
+      source 'https://github.com/jasonmcintosh/esl-erlang-compat/blob/master/rpmbuild/RPMS/noarch/esl-erlang-compat-R14B-1.el6.noarch.rpm?raw=true'
     end
     rpm_package "#{Chef::Config[:file_cache_path]}/esl-erlang-compat.rpm"
   end
 
-  if node['rabbitmq']['use_distro_version'] then
+  if node['rabbitmq']['use_distro_version']
     package 'rabbitmq-server'
   else
     remote_file "#{Chef::Config[:file_cache_path]}/rabbitmq-server-#{node['rabbitmq']['version']}-1.noarch.rpm" do
@@ -129,13 +128,12 @@ when 'smartos'
   end
 end
 
-if node['rabbitmq']['logdir']
-  directory node['rabbitmq']['logdir'] do
-    owner 'rabbitmq'
-    group 'rabbitmq'
-    mode '775'
-    recursive true
-  end
+directory node['rabbitmq']['logdir'] do
+  owner 'rabbitmq'
+  group 'rabbitmq'
+  mode '775'
+  recursive true
+  only_if { node['rabbitmq']['logdir'] }
 end
 
 directory node['rabbitmq']['mnesiadir'] do
@@ -179,12 +177,12 @@ if node['rabbitmq']['cluster'] && (node['rabbitmq']['erlang_cookie'] != existing
     group 'rabbitmq'
     mode 00400
     notifies :start, "service[#{node['rabbitmq']['service_name']}]", :immediately
-    notifies :run, "execute[reset-node]", :immediately
+    notifies :run, 'execute[reset-node]', :immediately
   end
 
   # Need to reset for clustering #
-  execute "reset-node" do
-    command "rabbitmqctl stop_app && rabbitmqctl reset && rabbitmqctl start_app"
+  execute 'reset-node' do
+    command 'rabbitmqctl stop_app && rabbitmqctl reset && rabbitmqctl start_app'
     action :nothing
   end
 end
