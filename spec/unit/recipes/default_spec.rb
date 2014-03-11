@@ -17,7 +17,7 @@
 
 require 'spec_helper'
 
-describe 'rabbitmq::default' do
+describe 'rackspace_rabbitmq::default' do
   rabbitmq_test_platforms.each do |platform, versions|
     describe "on #{platform}" do
       versions.each do |version|
@@ -28,10 +28,10 @@ describe 'rabbitmq::default' do
           end
           let(:chef_run) do
             runner = ChefSpec::Runner.new(platform: platform.to_s, version: version.to_s)
-            runner.converge('rabbitmq::default')
+            runner.converge('rackspace_rabbitmq::default')
           end
           it 'include the default recipe' do
-            expect(chef_run).to include_recipe 'rabbitmq::default'
+            expect(chef_run).to include_recipe 'rackspace_rabbitmq::default'
           end
           it 'creates the template' do
             expect(chef_run).to create_template('/etc/rabbitmq/rabbitmq.config')
