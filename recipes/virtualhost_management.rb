@@ -19,7 +19,7 @@
 # limitations under the License.
 #
 
-include_recipe 'rabbitmq::default'
+include_recipe 'rackspace_rabbitmq::default'
 
 node['rabbitmq']['virtualhosts'].each do |virtualhost|
   rabbitmq_vhost virtualhost do

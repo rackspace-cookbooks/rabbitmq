@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-include_recipe 'rabbitmq::default'
+include_recipe 'rackspace_rabbitmq::default'
 
 plugins = %w( rabbitmq_management rabbitmq_management_visualiser )
 
