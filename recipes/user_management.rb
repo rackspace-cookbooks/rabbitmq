@@ -3,7 +3,7 @@
 # Cookbook Name:: rabbitmq
 # Recipe:: user_management
 #
-# Copyright 2013, Grégoire Seux
+# Copyright 2013, Gregoire Seux
 # Copyright 2013, Opscode, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,10 +19,10 @@
 # limitations under the License.
 #
 
-include_recipe "rabbitmq::default"
-include_recipe "rabbitmq::virtualhost_management"
+include_recipe 'rackspace_rabbitmq::default'
+include_recipe 'rackspace_rabbitmq::virtualhost_management'
 
-node['rabbitmq']['enabled_users'].each do |user|
+node['rackspace_rabbitmq']['enabled_users'].each do |user|
   rabbitmq_user user['name'] do
     password user['password']
     action :add
@@ -40,7 +40,7 @@ node['rabbitmq']['enabled_users'].each do |user|
   end
 end
 
-node['rabbitmq']['disabled_users'].each do |user|
+node['rackspace_rabbitmq']['disabled_users'].each do |user|
   rabbitmq_user user do
     action :delete
   end

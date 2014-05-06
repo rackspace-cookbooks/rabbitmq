@@ -1,10 +1,7 @@
-# -*- coding: utf-8 -*-
 #
 # Cookbook Name:: rabbitmq
-# Recipe:: plugin_management
 #
-# Copyright 2013, Gregoire Seux
-# Copyright 2013, Opscode, Inc.
+# Copyright 2014, Rackspace, UK, Ltd.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,20 +14,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
-include_recipe 'rackspace_rabbitmq::default'
+# This helper file defines the platforms to test in ChefSpec
 
-node['rackspace_rabbitmq']['enabled_plugins'].each do |plugin|
-  rabbitmq_plugin plugin do
-    action :enable
-    notifies :restart, "service[#{node['rackspace_rabbitmq']['service_name']}]"
-  end
-end
-
-node['rackspace_rabbitmq']['disabled_plugins'].each do |plugin|
-  rabbitmq_plugin plugin do
-    action :disable
-    notifies :restart, "service[#{node['rackspace_rabbitmq']['service_name']}]"
-  end
+def rackspace_rabbitmq_test_platforms
+  {
+    ubuntu: %w(12.04),
+    debian: %w(7.2), # Requires Fauxhai chicanery as https://github.com/customink/fauxhai/pull/60
+                     #   hasn't made its way to RubyGems yet.
+#    centos: %w(6.3)
+  }
 end

@@ -19,22 +19,22 @@
 # limitations under the License.
 #
 
-include_recipe "rabbitmq::default"
+include_recipe 'rackspace_rabbitmq::default'
 
-node['rabbitmq']['policies'].each do |name, policy|
+node['rackspace_rabbitmq']['policies'].each do |name, policy|
   rabbitmq_policy name do
     pattern policy['pattern']
     params policy['params']
     priority policy['priority']
     vhost policy['vhost']
     action :set
-    notifies :restart, "service[#{node['rabbitmq']['service_name']}]"
+    notifies :restart, "service[#{node['rackspace_rabbitmq']['service_name']}]"
   end
 end
 
-node['rabbitmq']['disabled_policies'].each do |policy|
+node['rackspace_rabbitmq']['disabled_policies'].each do |policy|
   rabbitmq_policy policy do
     action :clear
-    notifies :restart, "service[#{node['rabbitmq']['service_name']}]"
+    notifies :restart, "service[#{node['rackspace_rabbitmq']['service_name']}]"
   end
 end

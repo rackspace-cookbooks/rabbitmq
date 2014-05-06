@@ -17,11 +17,11 @@
 # limitations under the License.
 #
 
-include_recipe "rabbitmq::default"
+include_recipe 'rackspace_rabbitmq::default'
 
 plugins = %w( rabbitmq_management rabbitmq_management_visualiser )
 
-service_name = node['rabbitmq']['service_name']
+service_name = node['rackspace_rabbitmq']['service_name']
 
 plugins.each do |plugin|
   rabbitmq_plugin plugin do

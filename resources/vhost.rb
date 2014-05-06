@@ -19,7 +19,7 @@
 
 actions :add, :delete
 
-attribute :vhost, :kind_of => String, :name_attribute => true
+attribute :vhost, kind_of: String, name_attribute: true
 
 def initialize(*args)
   super
