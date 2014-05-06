@@ -18,7 +18,7 @@
 require 'spec_helper'
 
 describe 'rackspace_rabbitmq::default' do
-  rabbitmq_test_platforms.each do |platform, versions|
+  rackspace_rabbitmq_test_platforms.each do |platform, versions|
     describe "on #{platform}" do
       versions.each do |version|
         describe version do

@@ -21,16 +21,16 @@
 
 include_recipe 'rackspace_rabbitmq::default'
 
-node['rabbitmq']['enabled_plugins'].each do |plugin|
+node['rackspace_rabbitmq']['enabled_plugins'].each do |plugin|
   rabbitmq_plugin plugin do
     action :enable
-    notifies :restart, "service[#{node['rabbitmq']['service_name']}]"
+    notifies :restart, "service[#{node['rackspace_rabbitmq']['service_name']}]"
   end
 end
 
-node['rabbitmq']['disabled_plugins'].each do |plugin|
+node['rackspace_rabbitmq']['disabled_plugins'].each do |plugin|
   rabbitmq_plugin plugin do
     action :disable
-    notifies :restart, "service[#{node['rabbitmq']['service_name']}]"
+    notifies :restart, "service[#{node['rackspace_rabbitmq']['service_name']}]"
   end
 end

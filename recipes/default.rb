@@ -27,22 +27,22 @@ when 'debian'
   # installs the required setsid command -- should be there by default but just in case
   package 'util-linux'
 
-  if node['rabbitmq']['use_distro_version']
+  if node['rackspace_rabbitmq']['use_distro_version']
     package 'rabbitmq-server'
   else
-    remote_file "#{Chef::Config[:file_cache_path]}/rabbitmq-server_#{node['rabbitmq']['version']}-1_all.deb" do
-      source node['rabbitmq']['package']
+    remote_file "#{Chef::Config[:file_cache_path]}/rabbitmq-server_#{node['rackspace_rabbitmq']['version']}-1_all.deb" do
+      source node['rackspace_rabbitmq']['package']
       action :create_if_missing
     end
-    dpkg_package "#{Chef::Config[:file_cache_path]}/rabbitmq-server_#{node['rabbitmq']['version']}-1_all.deb"
+    dpkg_package "#{Chef::Config[:file_cache_path]}/rabbitmq-server_#{node['rackspace_rabbitmq']['version']}-1_all.deb"
   end
 
   # Configure job control
-  if node['rabbitmq']['job_control'] == 'upstart'
+  if node['rackspace_rabbitmq']['job_control'] == 'upstart'
     # We start with stock init.d, remove it if we're not using init.d, otherwise leave it alone
-    service node['rabbitmq']['service_name'] do
+    service node['rackspace_rabbitmq']['service_name'] do
       action [:stop]
-      only_if { File.exists?('/etc/init.d/rabbitmq-server') }
+      only_if { File.exist?('/etc/init.d/rabbitmq-server') }
     end
 
     execute 'remove rabbitmq init.d command' do
@@ -53,18 +53,18 @@ when 'debian'
       action :delete
     end
 
-    template "/etc/init/#{node['rabbitmq']['service_name']}.conf" do
+    template "/etc/init/#{node['rackspace_rabbitmq']['service_name']}.conf" do
       source 'rabbitmq.upstart.conf.erb'
       owner 'root'
       group 'root'
       mode 0644
-      variables(max_file_descriptors: node['rabbitmq']['max_file_descriptors'])
+      variables(max_file_descriptors: node['rackspace_rabbitmq']['max_file_descriptors'])
     end
 
-    service node['rabbitmq']['service_name'] do
+    service node['rackspace_rabbitmq']['service_name'] do
       provider Chef::Provider::Service::Upstart
       action [:enable, :start]
-      # restart_command "stop #{node['rabbitmq']['service_name']} && start #{node['rabbitmq']['service_name']}"
+      # restart_command "stop #{node['rackspace_rabbitmq']['service_name']} && start #{node['rackspace_rabbitmq']['service_name']}"
     end
   end
 
@@ -73,14 +73,14 @@ when 'debian'
   ## debian package (at least in 2.8.2) that makes it not daemonize properly
   ## when called from chef. The setsid command forces the subprocess into a state
   ## where it can daemonize properly. -Kevin (thanks to Daniel DeLeo for the help)
-  service node['rabbitmq']['service_name'] do
+  service node['rackspace_rabbitmq']['service_name'] do
     start_command 'setsid /etc/init.d/rabbitmq-server start'
     stop_command 'setsid /etc/init.d/rabbitmq-server stop'
     restart_command 'setsid /etc/init.d/rabbitmq-server restart'
     status_command 'setsid /etc/init.d/rabbitmq-server status'
     supports status: true, restart: true
     action [:enable, :start]
-    only_if { node['rabbitmq']['job_control'] == 'initd' }
+    only_if { node['rackspace_rabbitmq']['job_control'] == 'initd' }
   end
 
 when 'rhel', 'fedora'
@@ -92,17 +92,17 @@ when 'rhel', 'fedora'
     rpm_package "#{Chef::Config[:file_cache_path]}/esl-erlang-compat.rpm"
   end
 
-  if node['rabbitmq']['use_distro_version']
+  if node['rackspace_rabbitmq']['use_distro_version']
     package 'rabbitmq-server'
   else
-    remote_file "#{Chef::Config[:file_cache_path]}/rabbitmq-server-#{node['rabbitmq']['version']}-1.noarch.rpm" do
-      source node['rabbitmq']['package']
+    remote_file "#{Chef::Config[:file_cache_path]}/rabbitmq-server-#{node['rackspace_rabbitmq']['version']}-1.noarch.rpm" do
+      source node['rackspace_rabbitmq']['package']
       action :create_if_missing
     end
-    rpm_package "#{Chef::Config[:file_cache_path]}/rabbitmq-server-#{node['rabbitmq']['version']}-1.noarch.rpm"
+    rpm_package "#{Chef::Config[:file_cache_path]}/rabbitmq-server-#{node['rackspace_rabbitmq']['version']}-1.noarch.rpm"
   end
 
-  service node['rabbitmq']['service_name'] do
+  service node['rackspace_rabbitmq']['service_name'] do
     action [:enable, :start]
   end
 
@@ -113,7 +113,7 @@ when 'suse'
   package 'rabbitmq-server-plugins'
   package 'rabbitmq-server'
 
-  service node['rabbitmq']['service_name'] do
+  service node['rackspace_rabbitmq']['service_name'] do
     action [:enable, :start]
   end
 when 'smartos'
@@ -123,60 +123,60 @@ when 'smartos'
     action :start
   end
 
-  service node['rabbitmq']['service_name'] do
+  service node['rackspace_rabbitmq']['service_name'] do
     action [:enable, :start]
   end
 end
 
-directory node['rabbitmq']['logdir'] do
+directory node['rackspace_rabbitmq']['logdir'] do
   owner 'rabbitmq'
   group 'rabbitmq'
   mode '775'
   recursive true
-  only_if { node['rabbitmq']['logdir'] }
+  only_if { node['rackspace_rabbitmq']['logdir'] }
 end
 
-directory node['rabbitmq']['mnesiadir'] do
+directory node['rackspace_rabbitmq']['mnesiadir'] do
   owner 'rabbitmq'
   group 'rabbitmq'
   mode '775'
   recursive true
 end
 
-template "#{node['rabbitmq']['config_root']}/rabbitmq-env.conf" do
+template "#{node['rackspace_rabbitmq']['config_root']}/rabbitmq-env.conf" do
   source 'rabbitmq-env.conf.erb'
   owner 'root'
   group 'root'
   mode 00644
-  notifies :restart, "service[#{node['rabbitmq']['service_name']}]"
+  notifies :restart, "service[#{node['rackspace_rabbitmq']['service_name']}]"
 end
 
-template "#{node['rabbitmq']['config_root']}/rabbitmq.config" do
+template "#{node['rackspace_rabbitmq']['config_root']}/rabbitmq.config" do
   source 'rabbitmq.config.erb'
   owner 'root'
   group 'root'
   mode 00644
-  notifies :restart, "service[#{node['rabbitmq']['service_name']}]"
+  notifies :restart, "service[#{node['rackspace_rabbitmq']['service_name']}]"
 end
 
-if File.exists?(node['rabbitmq']['erlang_cookie_path'])
-  existing_erlang_key =  File.read(node['rabbitmq']['erlang_cookie_path']).strip
+if File.exist?(node['rackspace_rabbitmq']['erlang_cookie_path'])
+  existing_erlang_key =  File.read(node['rackspace_rabbitmq']['erlang_cookie_path']).strip
 else
   existing_erlang_key = ''
 end
 
-if node['rabbitmq']['cluster'] && (node['rabbitmq']['erlang_cookie'] != existing_erlang_key)
-  log "stopping service[#{node['rabbitmq']['service_name']}] to change erlang_cookie" do
+if node['rackspace_rabbitmq']['cluster'] && (node['rackspace_rabbitmq']['erlang_cookie'] != existing_erlang_key)
+  log "stopping service[#{node['rackspace_rabbitmq']['service_name']}] to change erlang_cookie" do
     level :info
-    notifies :stop, "service[#{node['rabbitmq']['service_name']}]", :immediately
+    notifies :stop, "service[#{node['rackspace_rabbitmq']['service_name']}]", :immediately
   end
 
-  template node['rabbitmq']['erlang_cookie_path'] do
+  template node['rackspace_rabbitmq']['erlang_cookie_path'] do
     source 'doterlang.cookie.erb'
     owner 'rabbitmq'
     group 'rabbitmq'
     mode 00400
-    notifies :start, "service[#{node['rabbitmq']['service_name']}]", :immediately
+    notifies :start, "service[#{node['rackspace_rabbitmq']['service_name']}]", :immediately
     notifies :run, 'execute[reset-node]', :immediately
   end
 

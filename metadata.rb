@@ -1,19 +1,19 @@
-name             'rackspace_rabbitmq'
-maintainer       'Rackspace'
+name 'rackspace_rabbitmq'
+maintainer 'Rackspace'
 maintainer_email 'rackspace-cookbooks@rackspace.com'
-license          'Apache 2.0'
-description      'Installs and configures rabbitmq'
+license 'Apache 2.0'
+description 'Installs and configures rabbitmq'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          '1.0.0'
+version '1.0.0'
 
-recipe            'rackspace_rabbitmq', 'Install and configure RabbitMQ'
-recipe            'rackspace_rabbitmq::cluster', 'Set up RabbitMQ clustering.'
-recipe            'rackspace_rabbitmq::plugin_management', 'Manage plugins with node attributes'
-recipe            'rackspace_rabbitmq::virtualhost_management', 'Manage virtualhost with node attributes'
-recipe            'rackspace_rabbitmq::user_management', 'Manage users with node attributes'
-depends           'erlang', '>= 0.9'
+recipe 'rackspace_rabbitmq', 'Install and configure RabbitMQ'
+recipe 'rackspace_rabbitmq::cluster', 'Set up RabbitMQ clustering.'
+recipe 'rackspace_rabbitmq::plugin_management', 'Manage plugins with node attributes'
+recipe 'rackspace_rabbitmq::virtualhost_management', 'Manage virtualhost with node attributes'
+recipe 'rackspace_rabbitmq::user_management', 'Manage users with node attributes'
+depends 'erlang', '>= 0.9'
 
-%w{ubuntu debian redhat centos}.each do |os|
+%w(ubuntu debian redhat centos).each do |os|
   supports os
 end
 

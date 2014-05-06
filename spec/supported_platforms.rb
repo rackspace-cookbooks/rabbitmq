@@ -17,7 +17,7 @@
 
 # This helper file defines the platforms to test in ChefSpec
 
-def rabbitmq_test_platforms
+def rackspace_rabbitmq_test_platforms
   {
     ubuntu: %w(12.04),
     debian: %w(7.2), # Requires Fauxhai chicanery as https://github.com/customink/fauxhai/pull/60
